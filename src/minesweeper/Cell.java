@@ -1,25 +1,17 @@
 package minesweeper;
 
 public class Cell {
-    private int row = 0;
-    private int col = 0;
-    private boolean hasMine = false;
-    private int minesAround = 0;
-    private boolean flagged = false;
-    private boolean revealed = false;
-    private boolean exploded = false;
+    private int row;
+    private int col;
+    private boolean hasMine;
+    private int minesAdjacents;
+    private boolean flagged;
+    private boolean revealed;
+    private boolean exploded;
     
     public Cell(int row, int col){
         this.row = row;
         this.col = col;
-    }
-    
-    public int getRow(){
-        return row;
-    }
-    
-    public int getCol(){
-        return col;
     }
     
     public boolean hasMine(){
@@ -30,12 +22,12 @@ public class Cell {
         this.hasMine = hasMine;
     }
     
-    public int getMinesAround(){
-        return minesAround;
+    public int getMinesAdjacents(){
+        return minesAdjacents;
     }
     
-    public void setMinesAround(int minesAround){
-        this.minesAround = minesAround;
+    public void incrementMinesAdjacents(){
+        minesAdjacents++;
     }
     
     public boolean isFlagged(){
@@ -50,15 +42,15 @@ public class Cell {
         return revealed;
     }
     
-    public void reveal(boolean revealed){
+    public void setReveal(boolean revealed){
         this.revealed = revealed;
     }
     
-    public boolean iExploded(){
+    public boolean isExploded(){
         return exploded;
     }
     
-    public void setExploted( boolean exploded){
+    public void setExploded( boolean exploded){
         this.exploded = exploded;
     }
 }
