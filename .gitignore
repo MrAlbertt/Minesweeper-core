@@ -1,0 +1,15 @@
+#Carpetas requeridas para compilacion
+/build/
+/dist/
+
+#Archivos de netbeans
+build.xml
+manifest.mf
+/nbproject/private/
+/nbproject/build-impl.xml
+/nbproject/genfiles.properties
+
+#Archivos temporales
+*.classes
+*.log
+*.tmp
