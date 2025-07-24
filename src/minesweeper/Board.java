@@ -12,6 +12,10 @@ public class Board {
     private int mines;    
     private Cell[][] cells;
     
+    public Board(){
+        this(10,10,15);
+    }
+    
     public Board(int rows, int cols, int mines){
         this.rows = rows;
         this.cols = cols;
@@ -27,6 +31,33 @@ public class Board {
         calculateAdjacentMines();
     }
     
+    public Cell getCell(int row, int col){
+        return cells[row][col];
+    }
+    
+    public void calculateAdjacentMines(){
+        for(int r = 0; r < rows; r++){
+            for(int c = 0; c < cols; c++){
+                if(cells[r][c].hasMine()){
+                    for(int dr = -1; dr <= 1; dr++){
+                        for(int dc = -1; dc <= 1; dc++){
+                            if(isValid(r+dr,c+dc)){
+                                if(!cells[r+dr][c+dc].hasMine()){
+                                    cells[r+dr][c+dc].incrementMinesAdjacents();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public List<Cell> floodReveal(int row, int col){
+        List<Cell> changes = new ArrayList<>();
+        reveal(row, col, changes); 
+        return changes;        
+    }
     private void createMines(){
         int numMines = 0;
         while(true){
@@ -48,60 +79,37 @@ public class Board {
         return ThreadLocalRandom.current().nextInt(0, x );
     }
     
-    public void calculateAdjacentMines(){
-        for(int r = 0; r < rows; r++){
-            for(int c = 0; c < cols; c++){
-                if(cells[r][c].hasMine()){
-                    for(int dr = -1; dr <= 1; dr++){
-                        for(int dc = -1; dc <= 1; dc++){
-                            if(isValid(r+dr,c+dc)){
-                                if(!cells[r+dr][c+dc].hasMine()){
-                                    cells[r+dr][c+dc].incrementMinesAdjacents();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    public List<int[]> floodReveal(int row, int col){
-        List<int[]> changes = new ArrayList<>();
-        reveal(row, col, changes); 
-        return changes;        
-    }
-    
-    private void reveal(int row, int col, List<int[]> changes){
+    private void reveal(int row, int col, List<Cell> changes){
         
         if (cells[row][col].isRevealed()) return;
         
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{row, col});
+        Queue<Cell> queue = new LinkedList<>();
+        queue.add(cells[row][col]);
         
         while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            int r = current[0];
-            int c = current[1];
-        
-            if (cells[r][c].isRevealed()) continue;
+            Cell current = queue.poll();
+            int r = current.getRow();
+            int c = current.getCol();
             
-            cells[r][c].setReveal(true);
-            changes.add(new int[]{r, c});
             
-            if(cells[r][c].hasMine()){
-                cells[r][c].setExploded(true);            
+            if (current.isRevealed()) continue;
+            
+            current.setReveal(true);
+            changes.add(current);
+            
+            if(current.hasMine()){
+                current.setExploded(true);            
                 continue;
             } 
        
-            if(cells[r][c].getMinesAdjacents() != 0) continue;
+            if(current.getMinesAdjacents() != 0) continue;
             
             for(int dr = -1; dr <= 1; dr++){
                 for(int dc = -1; dc <= 1; dc++){
                     int nr = r + dr;
                     int nc = c + dc;
                     if (isValid(nr, nc) && !cells[nr][nc].isRevealed()) {
-                        queue.add(new int[]{nr, nc});
+                        queue.add(cells[nr][nc]);
                     }
                 }
             }
@@ -112,3 +120,5 @@ public class Board {
         return r >= 0 && r < rows && c >= 0 && c < cols;
     }
 }
+
+
