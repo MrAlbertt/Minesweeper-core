@@ -35,6 +35,10 @@ public class Board {
         return cells[row][col];
     }
     
+    public void setFlag(int row, int col){
+        cells[row][col].toogleFlag();
+    }
+    
     public void calculateAdjacentMines(){
         for(int r = 0; r < rows; r++){
             for(int c = 0; c < cols; c++){
@@ -58,6 +62,8 @@ public class Board {
         reveal(row, col, changes); 
         return changes;        
     }
+    
+            
     private void createMines(){
         int numMines = 0;
         while(true){
@@ -93,6 +99,7 @@ public class Board {
             
             
             if (current.isRevealed()) continue;
+            if (current.isFlagged()) continue;
             
             current.setReveal(true);
             changes.add(current);
